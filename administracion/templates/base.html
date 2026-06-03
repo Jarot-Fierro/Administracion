@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>{% block title %}Administración{% endblock %}</title>
+	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+	<link rel="icon" href="{% static 'libs/kaiadmin/img/kaiadmin/favicon.ico' %}" type="image/x-icon"/>
+
+	<!-- Fonts and icons -->
+	<script src="{% static 'libs/kaiadmin/js/plugin/webfont/webfont.min.js' %}"></script>
+	<script>
+		WebFont.load({
+			google: {"families":["Public Sans:300,400,500,600,700"]},
+			custom: {"families":["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "Simple Line Icons"], urls: ["{% static 'libs/kaiadmin/css/fonts.min.css' %}"]},
+			active: function() {
+				sessionStorage.fonts = true;
+			}
+		});
+	</script>
+
+	<!-- CSS Files -->
+	<link rel="stylesheet" href="{% static 'libs/kaiadmin/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'libs/kaiadmin/css/plugins.min.css' %}">
+	<link rel="stylesheet" href="{% static 'libs/kaiadmin/css/kaiadmin.min.css' %}">
+
+    {% block extra_css %}{% endblock %}
+    <style>
+        :root {
+            --primary-color: #1a2035;
+            --secondary-color: #5856d6;
+            --background-color: #f5f7fd;
+        }
+
+        body {
+            background-color: var(--background-color) !important;
+            color: #3e4466;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+            border-radius: 8px !important;
+        }
+
+        .card-header {
+            background-color: #fff !important;
+            border-bottom: 1px solid #edf2f9 !important;
+            padding: 1.25rem !important;
+        }
+
+        .card-title {
+            color: #1a2035 !important;
+            font-weight: 600 !important;
+            font-size: 1.1rem !important;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa !important;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+            color: #8d94ad !important;
+            border-top: none !important;
+            border-bottom: 2px solid #edf2f9 !important;
+        }
+
+        .btn-primary {
+            background-color: #5856d6 !important;
+            border-color: #5856d6 !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #4b49c0 !important;
+            border-color: #4b49c0 !important;
+        }
+
+        /* Toning down the "fluorescent" badges */
+        .badge-info {
+            background-color: #e1f0ff !important;
+            color: #007bff !important;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #dcfce7 !important;
+            color: #166534 !important;
+        }
+
+        .htmx-indicator.progress {
+            background-color: #edf2f9;
+        }
+
+        /* Paginación Uniforme */
+        .pagination .page-item .page-link {
+            min-width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0 2px;
+            border-radius: 4px !important;
+            font-weight: 500;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #5856d6 !important;
+            border-color: #5856d6 !important;
+            color: #fff !important;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #8d94ad !important;
+            background-color: #f8f9fa !important;
+            border-color: #edf2f9 !important;
+        }
+    </style>
+</head>
+<body>
+	<div class="wrapper">
+		<!-- Sidebar -->
+		{% include 'core/components/sidebar.html' %}
+		<!-- End Sidebar -->
+
+		<div class="main-panel">
+			<div class="main-header">
+				<div class="main-header-logo">
+					<!-- Logo Header -->
+					{% include 'core/components/header.html' %}
+					<!-- End Logo Header -->
+				</div>
+				<!-- Navbar Header -->
+				{% include 'core/components/navbar.html' %}
+				<!-- End Navbar -->
+			</div>
+
+			<div class="container">
+				<div class="page-inner">
+                    {% block content %}{% endblock %}
+				</div>
+			</div>
+			<!-- Footer -->
+			{% include 'core/components/footer.html' %}
+			<!-- End Footer -->
+
+		</div>
+	</div>
+	<!--   Core JS Files   -->
+	<script src="{% static 'libs/kaiadmin/js/core/jquery-3.7.1.min.js' %}"></script>
+	<script src="{% static 'libs/kaiadmin/js/core/popper.min.js' %}"></script>
+	<script src="{% static 'libs/kaiadmin/js/core/bootstrap.min.js' %}"></script>
+
+	<!-- jQuery Scrollbar -->
+	<script src="{% static 'libs/kaiadmin/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js' %}"></script>
+
+	<!-- Kaiadmin JS -->
+	<script src="{% static 'libs/kaiadmin/js/kaiadmin.min.js' %}"></script>
+
+	<script src="https://unpkg.com/htmx.org@2.0.7"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

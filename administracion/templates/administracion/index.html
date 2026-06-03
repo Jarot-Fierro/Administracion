@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Listado{% endblock %}
+
+{% block content %}
+{% if form %}
+{% include 'administracion/components/_form.html' with form_action=list_url form_title=title %}
+{% endif %}
+
+<div class="col-md-12">
+    <div class="card card-round">
+        <div class="card-body">
+            {% include 'administracion/components/_filters.html' with search_url=search_url search_placeholder="Buscar..." history_url=history_url %}
+
+            {% include 'administracion/components/_table.html' %}
+
+            {% include 'administracion/components/_pagination.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    /**
+     * Utility for toggleable cards with localStorage persistence.
+     * @param {string} cardId - The ID of the card element.
+     * @param {string} showBtnId - The ID of the button to show the card.
+     * @param {string} hideBtnId - The ID of the button to hide the card.
+     * @param {string} storageKey - The localStorage key to store visibility state.
+     */
+    function setupToggleCard(cardId, showBtnId, hideBtnId, storageKey) {
+        const card = document.getElementById(cardId);
+        const showBtn = document.getElementById(showBtnId);
+        const hideBtn = document.getElementById(hideBtnId);
+
+        if (!card || !showBtn || !hideBtn) return;
+
+        // Load initial state
+        const isVisible = localStorage.getItem(storageKey) === 'true';
+        if (isVisible) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+
+        // Show event
+        showBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            card.style.display = 'block';
+            localStorage.setItem(storageKey, 'true');
+        });
+
+        // Hide event
+        hideBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            card.style.display = 'none';
+            localStorage.setItem(storageKey, 'false');
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize toggle for Form
+        const storageKey = 'form_visible_' + window.location.pathname.replace(/\//g, '_');
+        setupToggleCard('form-card', 'btn-nuevo', 'btn-minimizar', storageKey);
+        setupToggleCard('form-card', 'btn-nuevo', 'btn-cancelar', storageKey);
+
+        const hasErrors = document.querySelector('.text-danger.small');
+        if (hasErrors) {
+            const card = document.getElementById('form-card');
+            if (card) {
+                card.style.display = 'block';
+                localStorage.setItem(storageKey, 'true');
+            }
+        }
+    });
+</script>
+{% endblock %}

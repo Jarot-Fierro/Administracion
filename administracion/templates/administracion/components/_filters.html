@@ -1,0 +1,88 @@
+<!-- Filtros Superiores (Buscador con HTMX y Selector de Registros) -->
+<div class="row mb-4 align-items-center">
+
+    <!-- Izquierda -->
+    <div class="col-md-6">
+        <div class="d-flex align-items-center gap-3">
+
+            <div class="dataTables_length">
+                <label class="d-flex align-items-center mb-0">
+                    Mostrar
+                    <select name="paginate_by"
+                            form="filter-form"
+                            class="form-select form-select-sm mx-2"
+                            style="width: 80px;"
+                            onchange="this.form.submit()">
+                        <option value="10" {% if request.GET.paginate_by == '10' %}selected{% endif %}>10</option>
+                        <option value="25" {% if request.GET.paginate_by == '25' %}selected{% endif %}>25</option>
+                        <option value="50" {% if request.GET.paginate_by == '50' %}selected{% endif %}>50</option>
+                        <option value="100" {% if request.GET.paginate_by == '100' %}selected{% endif %}>100</option>
+                    </select>
+                    registros
+                </label>
+            </div>
+
+            <form hx-get="{{ search_url }}"
+                  hx-trigger="keyup changed delay:500ms"
+                  hx-target="#resultado-tabla"
+                  hx-indicator=".htmx-indicator"
+                  hx-include="#filter-form"
+                  class="mb-0">
+
+                <div class="form-group mb-0">
+                    <div class="input-icon">
+
+                        <input type="search"
+                               name="q"
+                               class="form-control"
+                               placeholder="{{ search_placeholder|default:'Buscar...' }}"
+                               value="{{ request.GET.q }}">
+
+                        <span class="input-icon-addon">
+                            <i class="fa fa-search"></i>
+                        </span>
+
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="htmx-indicator progress mt-1"
+                 style="height:2px; display:none;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                     style="width:100%">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Derecha -->
+    <div class="col-md-6">
+        <div class="d-flex justify-content-md-end justify-content-start gap-2 mt-3 mt-md-0">
+
+            {% if history_url %}
+            <a href="{{ history_url }}"
+               class="btn btn-outline-warning">
+                <i class="fa fa-history me-1"></i>
+                Historial
+            </a>
+            {% endif %}
+
+            <a href="?export=csv{% for key,value in request.GET.items %}{% if key != 'export' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+               class="btn btn-outline-success">
+                <i class="fa fa-file-excel me-1"></i>
+                Reporte
+            </a>
+
+            <a href="#"
+               id="btn-nuevo"
+               class="btn btn-primary shadow-sm">
+                <i class="fa fa-plus me-1"></i>
+                Nuevo
+            </a>
+
+        </div>
+    </div>
+
+</div>

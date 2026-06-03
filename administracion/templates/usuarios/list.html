@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Usuarios - Listado{% endblock %}
+
+{% block content %}
+<div class="card" id="form-card" style="display: none;">
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <div class="card-title mb-0">
+            Crear Usuario
+        </div>
+
+        <div class="card-tools">
+            <button type="button"
+                    id="btn-minimizar"
+                    class="btn btn-sm btn-outline-secondary">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <div class="card-body">
+        <form method="post" action="{% url 'usuarios_list' %}">
+            {% csrf_token %}
+            <div class="row">
+                {% for field in form %}
+                <div class="col-md-3">
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="card-action">
+                <button type="submit" class="btn btn-success">
+                    <i class="fa fa-save me-1"></i>
+                    Guardar
+                </button>
+
+                <a href="#" class="btn btn-danger" id="btn-cancelar">
+                    <i class="fa fa-times me-1"></i>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="col-md-12">
+    <div class="card card-round">
+        <div class="card-body">
+            <!-- Filtros Superiores (Buscador con HTMX y Selector de Registros) -->
+            <div class="row mb-4 align-items-center">
+
+                <!-- Izquierda -->
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="dataTables_length">
+                            <label class="d-flex align-items-center mb-0">
+                                Mostrar
+                                <select name="paginate_by"
+                                        form="filter-form"
+                                        class="form-select form-select-sm mx-2"
+                                        style="width: 80px;"
+                                        onchange="this.form.submit()">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                registros
+                            </label>
+                        </div>
+
+                        <form hx-get="{% url 'buscar_usuarios' %}"
+                              hx-trigger="keyup changed delay:500ms"
+                              hx-target="#resultado-tabla"
+                              hx-indicator=".htmx-indicator"
+                              class="mb-0">
+
+                            <div class="form-group mb-0">
+                                <div class="input-icon">
+
+                                    <input type="search"
+                                           name="q"
+                                           class="form-control"
+                                           placeholder="Buscar usuario..."
+                                           value="{{ request.GET.q }}">
+
+                                    <span class="input-icon-addon">
+                                        <i class="fa fa-search"></i>
+                                    </span>
+
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <div class="htmx-indicator progress mt-1"
+                             style="height:2px; display:none;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                 style="width:100%">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="htmx-indicator progress mt-1"
+                         style="height:2px; display:none;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                             style="width:100%">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Derecha -->
+                <div class="col-md-6">
+                    <div class="d-flex justify-content-md-end justify-content-start gap-2 mt-3 mt-md-0">
+
+                        <a href="#"
+                           class="btn btn-outline-warning">
+                            <i class="fa fa-history me-1"></i>
+                            Historial
+                        </a>
+
+                        <a href="?export=csv{% for key,value in request.GET.items %}{% if key != 'export' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                           class="btn btn-outline-success">
+                            <i class="fa fa-file-excel me-1"></i>
+                            Reporte
+                        </a>
+
+                        <a href="#"
+                           id="btn-nuevo"
+                           class="btn btn-primary shadow-sm">
+                            <i class="fa fa-plus me-1"></i>
+                            Nuevo
+                        </a>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Tabla de Usuarios -->
+            <form id="filter-form" method="get" action="{% url 'usuarios_list' %}">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Funcionario</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th></th>
+                            <th>
+                                <input type="text" name="username" class="form-control form-control-sm"
+                                       value="{{ request.GET.username }}" placeholder="Filtrar...">
+                            </th>
+                            <th>
+                                <input type="text" name="first_name" class="form-control form-control-sm"
+                                       value="{{ request.GET.first_name }}" placeholder="Nombre...">
+                            </th>
+                            <th>
+                                <input type="text" name="last_name" class="form-control form-control-sm"
+                                       value="{{ request.GET.last_name }}" placeholder="Apellido...">
+                            </th>
+                            <th>
+                                <input type="text" name="email" class="form-control form-control-sm"
+                                       value="{{ request.GET.email }}" placeholder="Filtrar...">
+                            </th>
+                            <th></th>
+                            <th></th>
+                            <th class="text-end">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-filter"></i> Filtrar
+                                </button>
+                                <a type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fa fa-filter"></i> Limpiar
+                                </a>
+                            </th>
+                        </tr>
+                        </tfoot>
+                        <tbody id="resultado-tabla">
+                        {% include 'usuarios/partials/list_results.html' %}
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+
+            <!-- Footer: Información y Paginación -->
+            <div class="row mt-4">
+                <div class="col-sm-12 col-md-5 d-flex align-items-center">
+                    <div class="text-muted small">
+                        {{ showing_text }}
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-7">
+                    {% if is_paginated %}
+                    <nav aria-label="Navegación de páginas">
+                        <ul class="pagination pagination-sm justify-content-end mb-0">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="?page={{ page_obj.previous_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                            </li>
+                            {% endif %}
+
+                            {% for i in page_obj.paginator.page_range %}
+                            {% if page_obj.number == i %}
+                            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                            {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="?page={{ i }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {{ i }}
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="?page={{ page_obj.next_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    /**
+     * Utility for toggleable cards with localStorage persistence.
+     * @param {string} cardId - The ID of the card element.
+     * @param {string} showBtnId - The ID of the button to show the card.
+     * @param {string} hideBtnId - The ID of the button to hide the card.
+     * @param {string} storageKey - The localStorage key to store visibility state.
+     */
+    function setupToggleCard(cardId, showBtnId, hideBtnId, storageKey) {
+        const card = document.getElementById(cardId);
+        const showBtn = document.getElementById(showBtnId);
+        const hideBtn = document.getElementById(hideBtnId);
+
+        if (!card || !showBtn || !hideBtn) return;
+
+        // Load initial state
+        const isVisible = localStorage.getItem(storageKey) === 'true';
+        if (isVisible) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+
+        // Show event
+        showBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            card.style.display = 'block';
+            localStorage.setItem(storageKey, 'true');
+        });
+
+        // Hide event
+        hideBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            card.style.display = 'none';
+            localStorage.setItem(storageKey, 'false');
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize toggle for User Creation form
+        setupToggleCard('form-card', 'btn-nuevo', 'btn-minimizar', 'usuario_form_visible');
+        setupToggleCard('form-card', 'btn-nuevo', 'btn-cancelar', 'usuario_form_visible');
+
+        const hasErrors = document.querySelector('.text-danger.small');
+        if (hasErrors) {
+            document.getElementById('form-card').style.display = 'block';
+            localStorage.setItem('usuario_form_visible', 'true');
+        }
+    });
+</script>
+{% endblock %}

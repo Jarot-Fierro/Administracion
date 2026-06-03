@@ -1,0 +1,35 @@
+{% for usuario in usuarios %}
+<tr>
+    <td class="p-0">{{ usuario.id }}</td>
+    <td class="p-0">{{ usuario.username }}</td>
+    <td class="p-0">{{ usuario.first_name }}</td>
+    <td class="p-0">{{ usuario.last_name }}</td>
+    <td class="p-0">{{ usuario.email }}</td>
+    <td class="p-0"><span class="badge badge-info">{{ usuario.get_rol_display }}</span></td>
+    <td class="p-0">
+        {% if usuario.funcionario %}
+        {{ usuario.funcionario.nombres }} {{ usuario.funcionario.apellido_paterno }}
+        {% else %}
+        <span class="text-muted">No asociado</span>
+        {% endif %}
+    </td>
+    <td class="text-end text-nowrap p-0">
+        <div class="form-button-action">
+            <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link"
+                    data-original-title="Editar">
+                <i class="fa fa-edit"></i>
+            </button>
+            <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link"
+                    data-original-title="Eliminar">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="7" class="text-center py-4 text-muted">
+        <i class="fas fa-info-circle me-1"></i> Sin Registros
+    </td>
+</tr>
+{% endfor %}

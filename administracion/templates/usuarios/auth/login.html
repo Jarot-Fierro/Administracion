@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>Login - Administración</title>
+	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+	<link rel="icon" href="{% static 'libs/kaiadmin/img/kaiadmin/favicon.ico' %}" type="image/x-icon"/>
+
+	<!-- Fonts and icons -->
+	<script src="{% static 'libs/kaiadmin/js/plugin/webfont/webfont.min.js' %}"></script>
+	<script>
+		WebFont.load({
+			google: {"families":["Public Sans:300,400,500,600,700"]},
+			custom: {"families":["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "Simple Line Icons"], urls: ["{% static 'libs/kaiadmin/css/fonts.min.css' %}"]},
+			active: function() {
+				sessionStorage.fonts = true;
+			}
+		});
+	</script>
+
+	<!-- CSS Files -->
+	<link rel="stylesheet" href="{% static 'libs/kaiadmin/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'libs/kaiadmin/css/plugins.min.css' %}">
+	<link rel="stylesheet" href="{% static 'libs/kaiadmin/css/kaiadmin.min.css' %}">
+
+    <style>
+        .login {
+            background: #f4f7f6;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wrapper-login {
+            width: 400px;
+            padding: 30px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="login">
+	<div class="wrapper-login">
+        <div class="text-center">
+            <img src="{% static 'libs/kaiadmin/img/LogoGob-2026_1.png' %}" alt="navbar brand" class="navbar-brand mb-4" height="90">
+            <h3 class="m-0 p-0">Acceso al Sistema</h3>
+        </div>
+        
+        <form method="post" class="mt-0">
+            {% csrf_token %}
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    Usuario o contraseña incorrectos.
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <label for="username">Usuario</label>
+                <input type="text" name="username" class="form-control" required id="id_username">
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" name="password" class="form-control" required id="id_password">
+            </div>
+            <div class="form-action mb-3 mt-4">
+                <button type="submit" class="btn btn-primary w-100 btn-rounded">Ingresar</button>
+            </div>
+        </form>
+	</div>
+
+	<!--   Core JS Files   -->
+	<script src="{% static 'libs/kaiadmin/js/core/jquery-3.7.1.min.js' %}"></script>
+	<script src="{% static 'libs/kaiadmin/js/core/popper.min.js' %}"></script>
+	<script src="{% static 'libs/kaiadmin/js/core/bootstrap.min.js' %}"></script>
+</body>
+</html>
