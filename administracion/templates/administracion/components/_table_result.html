@@ -1,22 +1,21 @@
 {% load crud_tags %}
-<tbody id="resultado-tabla">
-    {% for obj in object_list %}
-    <tr>
-        {% for column in table_columns %}
-        <td>{{ obj|get_attr:column.name }}</td>
-        {% endfor %}
-        <td class="text-end">
-            <a href="#" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Editar">
-                <i class="fa fa-edit"></i>
-            </a>
-            <button type="button" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Eliminar">
-                <i class="fa fa-times"></i>
-            </button>
-        </td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="{{ table_columns|length|add:1 }}" class="text-center">No se encontraron registros.</td>
-    </tr>
+
+{% for obj in object_list %}
+<tr>
+    {% for column in table_columns %}
+    <td>{{ obj|get_attr:column.name }}</td>
     {% endfor %}
-</tbody>
+    <td class="text-end">
+        <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="Editar">
+            <i class="fa fa-edit"></i>
+        </a>
+        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Eliminar">
+            <i class="fa fa-times"></i>
+        </button>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="{{ table_columns|length|add:1 }}" class="text-center">No se encontraron registros.</td>
+</tr>
+{% endfor %}

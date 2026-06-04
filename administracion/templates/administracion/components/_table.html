@@ -10,7 +10,9 @@
             <th class="text-end">Acciones</th>
         </tr>
         </thead>
-        {% include 'administracion/components/_table_result.html' %}
+        <tbody id="resultado-tabla">
+            {% include 'administracion/components/_table_result.html' %}
+        </tbody>
         {% if filter_form %}
         <tfoot>
         <form id="filter-form" method="get" action="{{ list_url }}">
