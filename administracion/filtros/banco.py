@@ -1,7 +1,7 @@
 from django import forms
 
 
-class ComunaFilterForm(forms.Form):
+class BancoFilterForm(forms.Form):
     id = forms.IntegerField(
         required=False,
         widget=forms.NumberInput(
@@ -20,17 +20,15 @@ class ComunaFilterForm(forms.Form):
             }
         )
     )
-
-    codigo = forms.IntegerField(
+    codigo = forms.CharField(
         required=False,
-        widget=forms.NumberInput(
+        widget=forms.TextInput(
             attrs={
                 'class': 'form-control form-control-sm',
                 'placeholder': 'Código...'
             }
         )
     )
-
     active = forms.TypedChoiceField(
         required=False,
         choices=[

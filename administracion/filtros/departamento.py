@@ -1,7 +1,7 @@
 from django import forms
 
 
-class ComunaFilterForm(forms.Form):
+class DepartamentoFilterForm(forms.Form):
     id = forms.IntegerField(
         required=False,
         widget=forms.NumberInput(
@@ -20,7 +20,6 @@ class ComunaFilterForm(forms.Form):
             }
         )
     )
-
     codigo = forms.IntegerField(
         required=False,
         widget=forms.NumberInput(
@@ -30,7 +29,6 @@ class ComunaFilterForm(forms.Form):
             }
         )
     )
-
     active = forms.TypedChoiceField(
         required=False,
         choices=[

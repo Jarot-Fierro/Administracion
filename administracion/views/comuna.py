@@ -32,40 +32,24 @@ class ComunaListView(CRUDListMixin, ListView):
 
 
 def buscar_comuna(request):
-    # Reutilizamos el mixin para la búsqueda HTMX si fuera necesario, 
-    # pero por ahora mantenemos la compatibilidad con el endpoint existente 
-    # adaptándolo al nuevo sistema de filtrado si se desea.
-    nombre = request.GET.get('nombre', '').strip()
-    codigo = request.GET.get('codigo', '').strip()
-    q = request.GET.get("q", "").strip()
-
-    comuna = Comuna.objects.all()
-
-    if nombre:
-        comuna = comuna.filter(nombre__icontains=nombre)
-    if codigo:
-        comuna = comuna.filter(codigo__icontains=codigo)
-    if q:
-        query = Q()
-        for field in ['nombre', 'codigo']:
-            query |= Q(**{f"{field}__icontains": q})
-        comuna = comuna.filter(query)
-
-    comuna = comuna.order_by("-id")[:20]
+    view = ComunaListView()
+    view.request = request
+    queryset = view.get_queryset()
 
     # Necesitamos pasar table_columns al template de búsqueda
     table_columns = [
-        {'name': 'id', 'label': 'ID'},
-        {'name': 'nombre', 'label': 'Nombre'},
-        {'name': 'codigo', 'label': 'Código'},
-        {'name': 'active', 'label': 'Activo'},
+        {'name': 'id', 'label': 'ID', 'is_boolean': False},
+        {'name': 'nombre', 'label': 'Nombre', 'is_boolean': False},
+        {'name': 'codigo', 'label': 'Código', 'is_boolean': False},
+        {'name': 'active', 'label': 'Estado', 'is_boolean': True},
     ]
 
     return render(
         request,
         'administracion/components/_table_result.html',
         {
-            "object_list": comuna,
+            "object_list": queryset[:20],
             "table_columns": table_columns,
+            "list_url": reverse_lazy('comuna_list'),
         },
     )

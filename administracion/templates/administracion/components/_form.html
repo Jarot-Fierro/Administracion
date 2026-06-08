@@ -16,8 +16,9 @@
     </div>
 
     <div class="card-body">
-        <form method="post" action="{{ form_action }}">
+        <form method="post" action="{{ form_action }}" id="main-form">
             {% csrf_token %}
+            <input type="hidden" name="pk" id="form-pk">
             
             {% if form.non_field_errors %}
             <div class="alert alert-danger">

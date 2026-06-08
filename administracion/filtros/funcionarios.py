@@ -1,7 +1,7 @@
 from django import forms
 
 
-class ComunaFilterForm(forms.Form):
+class FuncionarioFilterForm(forms.Form):
     id = forms.IntegerField(
         required=False,
         widget=forms.NumberInput(
@@ -11,26 +11,33 @@ class ComunaFilterForm(forms.Form):
             }
         )
     )
-    nombre = forms.CharField(
+    rut = forms.CharField(
         required=False,
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control form-control-sm',
-                'placeholder': 'Nombre...'
+                'placeholder': 'RUT...'
             }
         )
     )
-
-    codigo = forms.IntegerField(
+    nombres = forms.CharField(
         required=False,
-        widget=forms.NumberInput(
+        widget=forms.TextInput(
             attrs={
                 'class': 'form-control form-control-sm',
-                'placeholder': 'Código...'
+                'placeholder': 'Nombres...'
             }
         )
     )
-
+    apellido_paterno = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control form-control-sm',
+                'placeholder': 'Apellido P...'
+            }
+        )
+    )
     active = forms.TypedChoiceField(
         required=False,
         choices=[

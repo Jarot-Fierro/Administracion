@@ -11,6 +11,8 @@ class Banco(StandardModel):
 
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['nombre',]
+
     def __str__(self):
         return self.nombre
 

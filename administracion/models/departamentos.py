@@ -11,6 +11,9 @@ class Departamento(StandardModel):
 
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['nombre', ]
+    LOWERCASE_FIELDS = ['email_contacto',]
+
     def __str__(self):
         return self.nombre
 

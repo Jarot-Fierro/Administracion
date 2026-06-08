@@ -23,6 +23,10 @@ class Funcionario(StandardModel):
 
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['nombres', 'apellido_paterno', 'apellido_materno', 'cargo', 'grado', 'numero_cuenta',
+                        'tipo_cuenta',]
+    LOWERCASE_FIELDS = ['email',]
+
     def __str__(self):
         return self.nombres
 

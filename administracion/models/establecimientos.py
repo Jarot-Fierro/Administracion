@@ -14,6 +14,9 @@ class Establecimiento(StandardModelOnly):
 
     history = HistoricalRecords()
 
+    UPPERCASE_FIELDS = ['nombre', 'region', 'direccion', ]
+    LOWERCASE_FIELDS = ['email_contacto',]
+
     def __str__(self):
         return self.nombre
 

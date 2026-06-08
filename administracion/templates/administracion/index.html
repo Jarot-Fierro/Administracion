@@ -66,6 +66,65 @@
         setupToggleCard('form-card', 'btn-nuevo', 'btn-minimizar', storageKey);
         setupToggleCard('form-card', 'btn-nuevo', 'btn-cancelar', storageKey);
 
+        const form = document.getElementById('main-form');
+        const formPk = document.getElementById('form-pk');
+        const formCard = document.getElementById('form-card');
+        const cardTitle = formCard ? formCard.querySelector('.card-title') : null;
+        const originalTitle = cardTitle ? cardTitle.innerText.trim() : '';
+
+        // Handle Edit buttons
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const data = this.dataset;
+                
+                // Set PK
+                if (formPk) formPk.value = data.id;
+                
+                // Fill form fields
+                if (form) {
+                    for (const key in data) {
+                        if (key === 'id' || key === 'bsToggle') continue;
+                        const field = form.querySelector(`[name="${key}"]`);
+                        if (field) {
+                            if (field.type === 'checkbox') {
+                                field.checked = data[key] === 'true' || data[key] === 'True';
+                            } else if (field.tagName === 'SELECT') {
+                                // Match both 'True'/'False' and 'true'/'false' for TypedChoiceField
+                                let val = data[key];
+                                if (val === 'true') val = 'True';
+                                if (val === 'false') val = 'False';
+                                field.value = val;
+                            } else {
+                                field.value = data[key];
+                            }
+                        }
+                    }
+                }
+
+                // Update title
+                if (cardTitle) cardTitle.innerText = 'Editar ' + originalTitle;
+
+                // Show card
+                if (formCard) {
+                    formCard.style.display = 'block';
+                    formCard.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Reset form on "Nuevo" button if exists
+        const btnNuevo = document.getElementById('btn-nuevo');
+        if (btnNuevo) {
+            btnNuevo.addEventListener('click', function() {
+                if (form) {
+                    form.reset();
+                    if (formPk) formPk.value = '';
+                }
+                if (cardTitle) cardTitle.innerText = originalTitle;
+            });
+        }
+
         const hasErrors = document.querySelector('.text-danger.small');
         if (hasErrors) {
             const card = document.getElementById('form-card');

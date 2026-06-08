@@ -6,12 +6,28 @@
     <td>{{ obj|get_attr:column.name }}</td>
     {% endfor %}
     <td class="text-end">
-        <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="Editar">
+        <a href="#" class="btn btn-primary btn-sm btn-edit" 
+           data-bs-toggle="tooltip" title="Editar"
+           data-id="{{ obj.pk }}"
+           {% for column in table_columns %}
+           {% if column.is_boolean %}
+           data-{{ column.name }}="{{ obj|get_attr_raw:column.name|lower }}"
+           {% else %}
+           data-{{ column.name }}="{{ obj|get_attr:column.name }}"
+           {% endif %}
+           {% endfor %}>
             <i class="fa fa-edit"></i>
         </a>
-        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Eliminar">
-            <i class="fa fa-times"></i>
-        </button>
+        <form method="post" action="{{ list_url }}" class="d-inline">
+            {% csrf_token %}
+            <input type="hidden" name="pk" value="{{ obj.pk }}">
+            <input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn btn-danger btn-sm" 
+                    data-bs-toggle="tooltip" title="Eliminar"
+                    onclick="return confirm('¿Está seguro de que desea desactivar este registro?')">
+                <i class="fa fa-times"></i>
+            </button>
+        </form>
     </td>
 </tr>
 {% empty %}

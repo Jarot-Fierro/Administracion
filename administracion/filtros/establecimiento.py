@@ -1,7 +1,7 @@
 from django import forms
 
 
-class ComunaFilterForm(forms.Form):
+class EstablecimientoFilterForm(forms.Form):
     id = forms.IntegerField(
         required=False,
         widget=forms.NumberInput(
@@ -35,10 +35,10 @@ class ComunaFilterForm(forms.Form):
         required=False,
         choices=[
             ('', 'Estado...'),
-            ('True', 'Activo'),
-            ('False', 'Inactivo'),
+            ('true', 'Activo'),
+            ('false', 'Inactivo'),
         ],
-        coerce=lambda x: x == 'True' if x in ['True', 'False'] else None,
+        coerce=lambda x: x == 'true' if x in ['true', 'false'] else None,
         empty_value=None,
         widget=forms.Select(
             attrs={
