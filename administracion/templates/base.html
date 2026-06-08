@@ -12,7 +12,7 @@
 	<script>
 		WebFont.load({
 			google: {"families":["Public Sans:300,400,500,600,700"]},
-			custom: {"families":["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "Simple Line Icons"], urls: ["{% static 'libs/kaiadmin/css/fonts.min.css' %}"]},
+			custom: {"families":["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], urls: ["{% static 'libs/kaiadmin/css/fonts.min.css' %}"]},
 			active: function() {
 				sessionStorage.fonts = true;
 			}
@@ -66,15 +66,6 @@
             border-bottom: 2px solid #edf2f9 !important;
         }
 
-        .btn-primary {
-            background-color: #5856d6 !important;
-            border-color: #5856d6 !important;
-        }
-
-        .btn-primary:hover {
-            background-color: #4b49c0 !important;
-            border-color: #4b49c0 !important;
-        }
 
         /* Toning down the "fluorescent" badges */
         .badge-info {
@@ -109,6 +100,42 @@
             background-color: #5856d6 !important;
             border-color: #5856d6 !important;
             color: #fff !important;
+        }
+
+        /* Sidebar Custom Styles */
+        .sidebar[data-background-color="dark"] .nav > .nav-item > a,
+        .sidebar[data-background-color="dark"] .nav > .nav-item > a i,
+        .sidebar[data-background-color="dark"] .nav > .nav-item > a p,
+        .sidebar[data-background-color="dark"] .nav-section .text-section,
+        .sidebar[data-background-color="dark"] .nav-collapse li a .sub-item {
+            color: #ffffff !important;
+            opacity: 1;
+        }
+
+        .sidebar[data-background-color="dark"] .nav > .nav-item > a:hover,
+        .sidebar[data-background-color="dark"] .nav > .nav-item > a:focus,
+        .sidebar[data-background-color="dark"] .nav > .nav-item.active > a {
+            background: rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+        }
+
+        .sidebar[data-background-color="dark"] .nav > .nav-item.active > a i,
+        .sidebar[data-background-color="dark"] .nav > .nav-item.active > a p,
+        .sidebar[data-background-color="dark"] .nav-collapse li.active a .sub-item {
+            color: #ffffff !important;
+            opacity: 1;
+        }
+
+        .sidebar[data-background-color="dark"] .nav-section .sidebar-mini-icon i {
+            color: #ffffff !important;
+        }
+
+        .sidebar[data-background-color="dark"] .nav > .nav-item a[data-bs-toggle="collapse"][aria-expanded="true"] {
+            background: #5856d6 !important;
+        }
+
+        .sidebar[data-background-color="dark"] .nav > .nav-item a .caret {
+            color: #ffffff !important;
         }
 
         .pagination .page-item.disabled .page-link {
@@ -157,6 +184,62 @@
 
 	<!-- Kaiadmin JS -->
 	<script src="{% static 'libs/kaiadmin/js/kaiadmin.min.js' %}"></script>
+
+	<script>
+		$(document).ready(function() {
+			// Persistencia del estado del sidebar (minimizado/expandido)
+			const body = $('body');
+			const wrapper = $('.wrapper');
+			
+			// Al cargar, verificar si hay un estado guardado
+			if (localStorage.getItem('sidebar-collapsed') === 'true') {
+				wrapper.addClass('sidebar_minimize');
+                // Algunos templates usan clases en el body o wrapper, Kaiadmin suele usar 'sidebar_minimize' en .wrapper
+			}
+
+			$('.toggle-sidebar, .sidenav-toggler').on('click', function() {
+				setTimeout(function() {
+					const isCollapsed = wrapper.hasClass('sidebar_minimize');
+					localStorage.setItem('sidebar-collapsed', isCollapsed);
+				}, 100);
+			});
+
+			// Persistencia de los menús colapsables (acordeones)
+			const collapseIds = localStorage.getItem('active-collapses');
+			if (collapseIds) {
+				const ids = JSON.parse(collapseIds);
+				ids.forEach(id => {
+					$(`#${id}`).addClass('show');
+					$(`a[href="#${id}"]`).attr('aria-expanded', 'true').removeClass('collapsed');
+				});
+			}
+
+			$('.nav-item a[data-bs-toggle="collapse"]').on('click', function() {
+				setTimeout(function() {
+					const activeCollapses = [];
+					$('.collapse.show').each(function() {
+						activeCollapses.push($(this).attr('id'));
+					});
+					localStorage.setItem('active-collapses', JSON.stringify(activeCollapses));
+				}, 500); // Esperar a que la animación termine
+			});
+            
+            // Marcar link activo basado en la URL actual
+            const currentPath = window.location.pathname;
+            $('.nav-item a').each(function() {
+                const href = $(this).attr('href');
+                if (href && currentPath === href) {
+                    $(this).parent().addClass('active');
+                    // Si está dentro de un colapsable, abrirlo
+                    $(this).closest('.collapse').addClass('show');
+                    const collapseId = $(this).closest('.collapse').attr('id');
+                    if (collapseId) {
+                        $(`a[href="#${collapseId}"]`).attr('aria-expanded', 'true').removeClass('collapsed');
+                    }
+                }
+            });
+		});
+	</script>
 
 	<script src="https://unpkg.com/htmx.org@2.0.7"></script>
 
